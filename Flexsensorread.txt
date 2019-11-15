@@ -1,0 +1,35 @@
+#include <ESP8266WiFi.h>
+#include <FirebaseArduino.h>
+#include <DNSServer.h>
+#include <ESP8266WebServer.h>
+#include <WiFiManager.h>
+// Set these to run example.
+#define FIREBASE_HOST "flexdatabase-3acf7.firebaseio.com"
+#define FIREBASE_AUTH "9Z9LcLgpmzD6EAqui3KvFJO617CdXs95f8WYWT8H"
+String t;
+void setup() {
+  Serial.begin(115200);
+  
+  WiFiManager wifiManager;
+  wifiManager.autoConnect("HariniWIFI");
+  Serial.println("Connected.");
+  Serial.println("IP address= ");
+  IPAddress ip = WiFi.localIP();
+  Serial.println("ip");
+  pinMode(A0,INPUT);
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  
+}    
+
+void loop() {
+  int flexadc=analogRead(A0);
+  String adc=String(flexadc);
+  Serial.println(adc);
+  
+  Firebase.pushInt("ard01/"+t+"/flex/",flexadc);
+  if(Firebase.failed())
+  {
+    Serial.println("Error");
+    Serial.println(Firebase.error());
+  }
+  delay(400);}
